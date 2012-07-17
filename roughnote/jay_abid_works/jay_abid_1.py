@@ -28,10 +28,10 @@ while(1):
         
         if 20 < hsv.item(cy,cx,0) < 30:
             cv2.rectangle(f,(x,y),(x+w,y+h),[0,255,255],2)
-            print "yellow :", x,y
+            print "yellow :", x,y,w,h
         elif 100 < hsv.item(cy,cx,0) < 120:
             cv2.rectangle(f,(x,y),(x+w,y+h),[255,0,0],2)
-            print "blue :", x,y
+            print "blue :", x,y,w,h
 
     cv2.imshow('img',f)
 
