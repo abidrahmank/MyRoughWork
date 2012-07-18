@@ -10,6 +10,8 @@ def getthresholdedimg(hsv):
     return both
 
 c = cv2.VideoCapture(0)
+width,height = c.get(3),c.get(4)
+print "frame width and height : ", width, height
 
 while(1):
     _,f = c.read()
