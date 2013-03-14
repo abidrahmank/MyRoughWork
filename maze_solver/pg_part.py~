@@ -1,0 +1,13 @@
+import pygame as pg
+import numpy as np
+
+black = (0,0,0)
+
+pg.init()
+surface = pg.display.set_mode((500,500),0,32)
+pg.display.set_caption("astar")
+surface.fill((0,255,0))
+for r in xrange(1,10):
+    pg.draw.line(surface,black,(r*50,0),(r*50,600),1)
+    pg.draw.line(surface,black,(0,r*50),(499,r*50),1)
+pg.display.update()
