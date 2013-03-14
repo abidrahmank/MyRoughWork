@@ -49,7 +49,7 @@ if __name__ == "__main__":
     grid.init_grid(start,target,walls)
     import time
     t = time.time()
-    path = lee_process(start,target,grid)
+    path = process(start,target,grid)
     print time.time() - t
     #print path
     screen = Screen((500,500),10)
