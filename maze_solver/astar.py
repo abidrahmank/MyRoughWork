@@ -3,8 +3,11 @@
 
 import time, sys, heapq
 import numpy as np
+import pygame as pg
+from pg_part import *
 #import cv2
-
+from operator import attrgetter
+from pygame.locals import *
 # --------------------------------------------------------------------------------------- #
 # -------------------------          class CELL              ---------------------------- #
 # --------------------------------------------------------------------------------------- #
@@ -112,37 +115,61 @@ def retrace_path(target,closed_cells):
 # -------------------------          original A* function    ---------------------------- #
 # --------------------------------------------------------------------------------------- #
 
-def process(start,target,grid):
+def process(start,target,grid,walls,screen):
     
     """ Original A* algorithm """
+
+##    pg.init(); pg.display.set_caption("A* Maze")
+##    #grid = creategrid(dim)
+##    screen = pg.display.set_mode((1000,700))
+##    
+##    screen.fill((255,255,255))
+##    for r in xrange(1,100):
+##        pg.draw.line(screen,(0,0,0),(r*10,0),(r*10,1000),1)
+##        pg.draw.line(screen,(0,0,0),(0,r*10),(1000,r*10),1)
+##    for wall in walls:
+##        x,y = wall
+##        rect = pg.Rect(x*10,y*10,10,10)
+##        pg.draw.rect(screen,(0,0,0),rect)
+##    pg.display.update()
+
+
+    
     found_path = False
     route = []
-    
+    start.h = grid.get_h(start,target)
+    start.g = 0
+    start.f = 2*start.h+start.g
     grid.open_cells.append(start)                       # first push start to open_cells
     cells_processed = 1
     
     while(grid.open_cells != []):       # if open_cells is not empty
         
-        sorted(grid.open_cells,key = lambda cell: cell.f)
-
+        grid.open_cells = sorted(grid.open_cells,key = attrgetter('f','h','y'))
         current_cell = grid.open_cells.pop(0)
         grid.closed_cells.add(current_cell)             # add start to closed cells
+        color = np.random.randint(0,256,3).tolist()
+        draw_cell(screen,current_cell,(0,0,255))
         
         adj_cells = grid.get_adjcells(current_cell) # get the adjacent cells of start and put them in open cells
+        if found_path == True:
+            break
 
         for cell in adj_cells:
             if cell.cell_xy() == target.cell_xy() and found_path == False: # if cell is target, job done
                 target.parent = current_cell
                 grid.closed_cells.add(target)
                 route = retrace_path(target,grid.closed_cells)
+                for cell in route:
+                    draw_cell(screen,cell,(0,255,0))
                 cells_processed += 1
                 found_path = True
                 
             elif cell not in grid.closed_cells and cell.reachable == True and found_path == False: # or check if cell in closed_cells or walls
-                
+                draw_cell(screen,cell,(255,0,0))
                 cell.h = grid.get_h(cell,target)                # update the values of cell
-                cell.g = current_cell.h+1
-                cell.f = cell.h + cell.g
+                cell.g = current_cell.g+1
+                cell.f = 2*cell.h + cell.g
                 
                 if cell not in grid.open_cells:                 # if cell not in open_cells, add it, update parent
                     cells_processed += 1
@@ -153,60 +180,66 @@ def process(start,target,grid):
                     old_cell = grid.open_cells[grid.open_cells.index(cell)] # present is the cell already in open cells
                     if cell.f < old_cell.f:                     # if new.f < old.f, replace old.parent by new.parent
                         old_cell.parent = current_cell                   
+        pg.time.delay(10)
+
+
+
     print "cells_processed = ", cells_processed
+
+    
     return route
 
 
-def lee_process(start,target,grid):
-    open_list = []
-    start.h = 0
-    open_list.append(start)
-    while (open_list!=[]):
-        current_cell = open_list.pop(0)
-        if current_cell == target:
-            break
-        adj_cells = grid.get_adjcells(current_cell)
-        for cell in adj_cells:
-            if cell.h == 0:
-                cell.h = current_cell.h+1
-                open_list.append(cell)
+def MainGui():
+    pg.init(); pg.display.set_caption("A* Maze")
+    #grid = creategrid(dim)
+    screen = pg.display.set_mode((1000,700))
+    
+    screen.fill((255,255,255))
+    for wall in walls:
+        x,y = wall
+        rect = pg.Rect(x*10,y*10,10,10)
+        pg.draw.rect(screen,(0,0,0),rect)
 
-    path = []
-    path.append(target)
-    pathfound = False
-    while (pathfound == False):
-        current_cell = path[-1]
-        adj_cells = grid.get_adjcells(current_cell)
-        next = None
-        for cell in adj_cells:
-            if cell == start:
-                path.append(cell)
-                current_cell = start
-                pathfound = True
-                break
-            elif (cell.h == 0 and cell.h ==target.h-1):
-                next = cell
-        path.append(next)
-        
-    return path
+    draw_grid(screen)
+    
+    pg.display.update()    
+
+    
+    path = process(start,target,grid,walls,screen)
+    
+    draw_grid(screen)
+    
+    pg.display.update()
+    while True:
+        events = pg.event.get()
+        for e in events:
+            if e.type == KEYDOWN:
+                if e.key == K_ESCAPE:
+                    pg.quit()
+                    sys.exit()
+
+
+
      
 
     
 if __name__ == '__main__':
     start = Cell(0,0,True)
     test = Cell(5,5,True)
-    target = Cell(5,5,True)
-    #walls = ((0, 5), (1, 0), (1, 1), (1, 5), (2, 3),(3, 1), (3, 2), (3, 5), (4, 1), (4, 4), (5, 1))
-    walls = []
+    target = Cell(20,20,True)
+    walls = ((0, 5), (1, 0), (1, 1), (1, 5), (2, 3),(3, 1), (3, 2), (3, 5), (4, 1), (4, 4), (5, 1),(19,20),(20,19))
+    #walls = []
     #walls = ((0,1),(1,1),(1,0))
-    grid = Grid(6)
+    grid = Grid(500)
 
     grid.init_grid(start,target,walls)
 
-    path = process(start,target,grid)
-    print path
+    #path = process(start,target,grid,walls)
 
-    
+    #print path
+
+    MainGui()
 
 
 

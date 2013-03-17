@@ -10,6 +10,11 @@ white = (255,255,255)
 
 pg.init()
 
+def draw_cell(surface,cell,color):
+    rect = pg.Rect(cell.x*10,cell.y*10,10,10)
+    pg.draw.rect(surface,color,rect)
+    pg.display.update(rect)
+
 def draw_grid(surface):
     size = surface.get_size()[0]
     for r in xrange(1,size):
