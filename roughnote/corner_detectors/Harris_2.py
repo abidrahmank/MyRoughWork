@@ -9,7 +9,8 @@ def det(a,b,c,d):
     return 0
 
 img = cv2.imread('sofsign.jpg',0)
-img = cv2.equalizeHist(img)
+
+#img = cv2.equalizeHist(img)
 rows,cols = img.shape
 #img = cv2.GaussianBlur(img,(5,5),1.4)
 t = time.time()
@@ -34,7 +35,7 @@ Det = a*d - np.square(b)
 R = Det/(Trace+1)
 
 cv2.normalize(R,R,0,1,cv2.NORM_MINMAX)
-R = np.where(R>0.5,255,0)
+R = np.where(R>0.1,255,0)
 R = np.uint8(R)
 
 t2 = time.time()
