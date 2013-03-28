@@ -8,6 +8,12 @@ from pg_part import *
 #import cv2
 from operator import attrgetter
 from pygame.locals import *
+
+
+''' source - red
+    wall   - black
+    target - blue
+    path   - green '''
 # --------------------------------------------------------------------------------------- #
 # -------------------------          class CELL              ---------------------------- #
 # --------------------------------------------------------------------------------------- #
@@ -40,9 +46,9 @@ class Grid(object):
         self.cell_array = []
         
 
-    def init_grid(self,start,end,walls=[]):
-        self.start = start
-        self.end = end
+    def init_grid(self,walls=[]):
+        #self.start = start
+        #self.end = end
         self.walls = walls
         for i in xrange(self.grid_size):
             for j in xrange(self.grid_size):
@@ -144,7 +150,9 @@ def process(start,target,grid,walls,screen):
     cells_processed = 1
     
     while(grid.open_cells != []):       # if open_cells is not empty
-        
+        #
+        # Below line is the sorting according to f and h
+        #
         grid.open_cells = sorted(grid.open_cells,key = attrgetter('f','h','y'))
         current_cell = grid.open_cells.pop(0)
         grid.closed_cells.add(current_cell)             # add start to closed cells
@@ -180,7 +188,7 @@ def process(start,target,grid,walls,screen):
                     old_cell = grid.open_cells[grid.open_cells.index(cell)] # present is the cell already in open cells
                     if cell.f < old_cell.f:                     # if new.f < old.f, replace old.parent by new.parent
                         old_cell.parent = current_cell                   
-        pg.time.delay(10)
+        pg.time.delay(50)
 
 
 
@@ -191,6 +199,12 @@ def process(start,target,grid,walls,screen):
 
 
 def MainGui():
+    #walls = ((0, 5), (1, 0), (1, 1), (1, 5), (2, 3),(3, 1), (3, 2), (3, 5), (4, 1), (4, 4), (5, 1),(19,20),(20,19))
+    walls = []
+    #walls = ((0,1),(1,1),(1,0))
+    grid = Grid(500)
+
+    #grid.init_grid(walls)
     pg.init(); pg.display.set_caption("A* Maze")
     #grid = creategrid(dim)
     screen = pg.display.set_mode((1000,700))
@@ -204,20 +218,49 @@ def MainGui():
     draw_grid(screen)
     
     pg.display.update()    
-
-    
-    path = process(start,target,grid,walls,screen)
-    
-    draw_grid(screen)
-    
-    pg.display.update()
+    start_track = False
     while True:
         events = pg.event.get()
-        for e in events:
-            if e.type == KEYDOWN:
-                if e.key == K_ESCAPE:
-                    pg.quit()
-                    sys.exit()
+
+        if start_track == False:
+            for e in events:
+                mousex = (pg.mouse.get_pos()[0])/10
+                mousey = (pg.mouse.get_pos()[1])/10
+                if e.type == KEYDOWN:
+                    if e.key == K_ESCAPE:
+                        pg.quit()
+                        sys.exit()
+                    elif (e.key == K_s):        # hold mouse and press s to set source
+                        start = Cell(mousex,mousey,True)
+                        draw_cell(screen,start,(255,0,0))
+                    elif (e.key == K_t):        # hold mouse and press t to set target
+                        target = Cell(mousex,mousey,True)
+                        draw_cell(screen,target,(0,0,255))
+                    elif (e.key == K_SPACE):    # press SPACE to find the track
+                        start_track = True
+                    elif (e.key == K_c):        # press c to clear window
+                        screen.fill((255,255,255))
+                        draw_grid(screen)
+                        pg.display.update()
+
+                elif e.type == MOUSEBUTTONDOWN:
+                    if pg.mouse.get_pressed()[0] == 1:
+                        walls.append([mousex,mousey])
+                        pg.draw.rect(screen,(0,0,0),(mousex*10,mousey*10,10,10))
+                        
+
+        if start_track == True:  
+            grid.init_grid(walls)
+            path = process(start,target,grid,walls,screen)
+            start_track = False
+            del start,target
+            #grid.open_cells = [],grid.closed_cells = set()
+        
+        draw_grid(screen)
+        
+        pg.display.update()
+
+
 
 
 
@@ -225,15 +268,15 @@ def MainGui():
 
     
 if __name__ == '__main__':
-    start = Cell(0,0,True)
-    test = Cell(5,5,True)
-    target = Cell(20,20,True)
-    walls = ((0, 5), (1, 0), (1, 1), (1, 5), (2, 3),(3, 1), (3, 2), (3, 5), (4, 1), (4, 4), (5, 1),(19,20),(20,19))
-    #walls = []
-    #walls = ((0,1),(1,1),(1,0))
-    grid = Grid(500)
+    #start = Cell(0,0,True)
+    #test = Cell(5,5,True)
+    #target = Cell(20,20,True)
+    # walls = ((0, 5), (1, 0), (1, 1), (1, 5), (2, 3),(3, 1), (3, 2), (3, 5), (4, 1), (4, 4), (5, 1),(19,20),(20,19))
+    # #walls = []
+    # #walls = ((0,1),(1,1),(1,0))
+    # grid = Grid(500)
 
-    grid.init_grid(start,target,walls)
+    # grid.init_grid(walls)
 
     #path = process(start,target,grid,walls)
 
