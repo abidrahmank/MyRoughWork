@@ -1,4 +1,3 @@
-
 .model C,flat
 
 .data
@@ -122,7 +121,6 @@ euclidean_SSE proc
 	shr ecx,4
 
 	pxor xmm7,xmm7				; clear mm7 to store 0
-	pxor xmm6,xmm6
 
 	MainLoop:
 	;
