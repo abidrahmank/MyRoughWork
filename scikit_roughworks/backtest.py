@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from backproject import histogram_backproject as bp
+from backproject2 import histogram_backproject as bp
 from matplotlib import pyplot as plt
 from skimage import data
 
