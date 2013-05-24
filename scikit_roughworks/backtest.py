@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from backproject2 import histogram_backproject as bp
+from backproject import histogram_backproject as bp
 from matplotlib import pyplot as plt
 from skimage import data
 
@@ -9,14 +9,14 @@ img2 = cv2.imread('rose_red.png',0)
 
 b = bp(img1,img2)
 
-img1 = cv2.imread('rose.png')
-img2 = cv2.imread('rose_red.png')
+img1 = cv2.imread('ihc.jpg')
+img2 = cv2.imread('ihc_small.png')
 
 
 bc = bp(img1,img2)
 
-
-ret,thresh = cv2.threshold(bc,0.1*255,255,0)
+print bc.max(),bc.min()
+ret,thresh = cv2.threshold(bc,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
 res = cv2.bitwise_and(img1,img1,mask = thresh)
 #cv2.imshow('img',thresh)
