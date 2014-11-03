@@ -1,0 +1,16 @@
+A sudoku solver in C
+========================
+
+Use DFS for searching the solution
+
+Different test cases are given
+
+Number of solutions (based on info from http://www.sudokuwiki.org/sudoku.htm)
+
+1 - s0: unique solution
+2 - s1: >500 solutions
+3 - s2: unique solution
+4 - s3: unique solution
+5 - s4: unique solution
+6 - s6: No enough info
+7 - s9: No enough info
