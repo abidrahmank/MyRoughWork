@@ -26,7 +26,7 @@ typedef struct cell{
     int A[9];           // Designed for worst case
     int N;              // Number of possible values
     int idx;            // Which cell we processed last (TODO : Unnecessary, remove it)
-    int isEmpty;        // TODO : Unnecessary, remove it
+//    int isEmpty;        // TODO : Unnecessary, remove it
 }Cell, *CellPtr;
 
 void printArray(int A[], int N)
@@ -43,7 +43,8 @@ void printCA(Cell CA[])
     int i,j;
     printf("i\tR\tC\tN\tidx\tisEmpty\t A\n");
     for(i=0; i<81; i++){
-        printf("%d\t%d\t%d\t%d\t%d\t%d\t" , i, ROW(i), COL(i), CA[i].N, CA[i].idx, CA[i].isEmpty); 
+//        printf("%d\t%d\t%d\t%d\t%d\t%d\t" , i, ROW(i), COL(i), CA[i].N, CA[i].idx, CA[i].isEmpty); 
+        printf("%d\t%d\t%d\t%d\t%d\t" , i, ROW(i), COL(i), CA[i].N, CA[i].idx); 
         for(j=0; j<CA[i].N; ++j){
             printf("%d ", CA[i].A[j]);
         }
