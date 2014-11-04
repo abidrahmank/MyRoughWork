@@ -23,7 +23,7 @@ unsigned long nASSUMPTIONS = 0;
 
 typedef struct cell{
 //    int R, C;
-    int A[9];           // Designed for worst case
+    char A[10];           // Designed for worst case
     int N;              // Number of possible values
     int idx;            // Which cell we processed last (TODO : Unnecessary, remove it)
 //    int isEmpty;        // TODO : Unnecessary, remove it
@@ -33,7 +33,7 @@ void printArray(int A[], int N)
 {
     int i=0;
     for(i=0; i<N; ++i){
-        printf("%d ", A[i]);
+        printf("%c ", A[i]);
     }
     printf("\n");
 }
@@ -46,7 +46,7 @@ void printCA(Cell CA[])
 //        printf("%d\t%d\t%d\t%d\t%d\t%d\t" , i, ROW(i), COL(i), CA[i].N, CA[i].idx, CA[i].isEmpty); 
         printf("%d\t%d\t%d\t%d\t%d\t" , i, ROW(i), COL(i), CA[i].N, CA[i].idx); 
         for(j=0; j<CA[i].N; ++j){
-            printf("%d ", CA[i].A[j]);
+            printf("%c ", CA[i].A[j]);
         }
     printf("\n");
     }
@@ -72,7 +72,7 @@ void animateSudoku(int S[][nCOLS])
     usleep(INTERVAL);
 }
 
-int findPossibleValues(int S[][nCOLS], int A[], int cell_val)
+int findPossibleValues(int S[][nCOLS], char A[], int cell_val)
 {
     int R = ROW(cell_val);
     int C = COL(cell_val);
@@ -82,16 +82,16 @@ int findPossibleValues(int S[][nCOLS], int A[], int cell_val)
         return count;
     }        
 
-    int tmp[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int tmp[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     int i, j, tmp2;
     for(i=0; i<9; ++i){         // First check all values in a ROW    
         tmp2 = S[R][i];         // Take a number in Sudoku
-        tmp[tmp2] = 0;           // Clear it from tmp
+        tmp[tmp2] = '0';           // Clear it from tmp
     }
     
     for(i=0; i<9; ++i){
         tmp2 = S[i][C];         // Now check in a column, ie vertical scanning
-        tmp[tmp2] = 0;
+        tmp[tmp2] = '0';
     }
 
     int BLK_R = B_ROW(cell_val);
@@ -99,12 +99,12 @@ int findPossibleValues(int S[][nCOLS], int A[], int cell_val)
     for(i=BLK_R; i<BLK_R+3; ++i){
         for(j=BLK_C; j<BLK_C+3; ++j){
             tmp2 = S[i][j];
-            tmp[tmp2] = 0;
+            tmp[tmp2] = '0';
         }
     }
 
     for(i=1; i<10; i++){
-        if(tmp[i] != 0){
+        if(tmp[i] != '0'){
             A[count] = tmp[i];
             ++count;
         }
@@ -143,7 +143,7 @@ int checkViolation(int S[][9], Cell CA[], int cell_val, int key)
     return 1;
 }
 
-void updatePossibleValues(Cell CA[], int cell_val, int given_val)
+void updatePossibleValues(Cell CA[], int cell_val, char given_val)
 {
     int R = ROW(cell_val);
     int C = COL(cell_val);
@@ -155,7 +155,7 @@ void updatePossibleValues(Cell CA[], int cell_val, int given_val)
         n = CA[tmp].N;
         for(j=0; j<n; ++j){         //     
             if(CA[tmp].A[j] == given_val){        // Take a number in Sudoku
-                CA[tmp].A[j] = 0;           // Clear it from tmp
+                CA[tmp].A[j] = '0';           // Clear it from tmp
                 --CA[tmp].idx;
                 break;
             }
@@ -167,7 +167,7 @@ void updatePossibleValues(Cell CA[], int cell_val, int given_val)
         n = CA[tmp].N;
         for(j=0; j<n; ++j){
             if(CA[tmp].A[j] == given_val){
-                CA[tmp].A[j] = 0;         // Now check in a column, ie vertical scanning
+                CA[tmp].A[j] = '0';         // Now check in a column, ie vertical scanning
                 --CA[tmp].idx;
                 break;
             }
@@ -182,7 +182,7 @@ void updatePossibleValues(Cell CA[], int cell_val, int given_val)
             n = CA[tmp].N;
             for(k=0; k<n; ++k){         //     
                 if(CA[tmp].A[k] == given_val){        // Take a number in Sudoku
-                    CA[tmp].A[k] = 0;           // Clear it from tmp
+                    CA[tmp].A[k] = '0';           // Clear it from tmp
                     --CA[tmp].idx;
                     break;
                 }
@@ -237,11 +237,13 @@ int DFS(int S[][9], Cell CA[], int LIST[], int MaxSize)
     int R = ROW(cellUT);
     int C = COL(cellUT);
     int nPossibleValues = CA[cellUT].N;                     // Its number of possible values
-    int i, currSize, testval, vstatus;
+    int i, currSize, vstatus;
+    char testval;
     for(i=0; i<nPossibleValues; ++i){
         testval = CA[cellUT].A[i];                          // Take each possible test values
-        if (testval == 0) continue;
-        S[R][C] = testval;            // assign it.
+        if (testval == '0') 
+            continue;
+        S[R][C] = (int)(testval-'0');            // assign it.
         ++nASSUMPTIONS;
         //    animateSudoku(S);
         currSize = MaxSize-1;
