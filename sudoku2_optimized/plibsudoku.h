@@ -22,7 +22,7 @@
 unsigned long nASSUMPTIONS = 0;
 
 typedef struct cell{
-    int R, C;
+//    int R, C;
     int A[9];           // Designed for worst case
     int N;              // Number of possible values
     int idx;            // Which cell we processed last (TODO : Unnecessary, remove it)
@@ -43,7 +43,7 @@ void printCA(Cell CA[])
     int i,j;
     printf("i\tR\tC\tN\tidx\tisEmpty\t A\n");
     for(i=0; i<81; i++){
-        printf("%d\t%d\t%d\t%d\t%d\t%d\t" , i, CA[i].R, CA[i].C, CA[i].N, CA[i].idx, CA[i].isEmpty); 
+        printf("%d\t%d\t%d\t%d\t%d\t%d\t" , i, ROW(i), COL(i), CA[i].N, CA[i].idx, CA[i].isEmpty); 
         for(j=0; j<CA[i].N; ++j){
             printf("%d ", CA[i].A[j]);
         }
@@ -116,8 +116,8 @@ int findPossibleValues(int S[][nCOLS], int A[], int cell_val)
 // Returns 1 if it is Fine, Else it returns 0
 int checkViolation(int S[][9], Cell CA[], int cell_val, int key)
 {
-    int R = CA[cell_val].R; 
-    int C = CA[cell_val].C;
+    int R = ROW(cell_val);
+    int C = COL(cell_val);
     //int tmp[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     int i, j, tmp2;
     for(i=0; i<9; ++i){         // First check all values in a ROW    
@@ -233,12 +233,14 @@ int DFS(int S[][9], Cell CA[], int LIST[], int index, int MaxSize)
     int status = 0;
     
     int cellUT = LIST[index];                               // Cell Under Test
+    int R = ROW(cellUT);
+    int C = COL(cellUT);
     int nPossibleValues = CA[cellUT].N;                     // Its number of possible values
     int i, currSize, testval, vstatus;
     for(i=0; i<nPossibleValues; ++i){
         testval = CA[cellUT].A[i];                          // Take each possible test values
         if (testval == 0) continue;
-        S[CA[cellUT].R][CA[cellUT].C] = testval;            // assign it.
+        S[R][C] = testval;            // assign it.
         ++nASSUMPTIONS;
         //    animateSudoku(S);
         currSize = MaxSize-1;
@@ -263,7 +265,7 @@ int DFS(int S[][9], Cell CA[], int LIST[], int index, int MaxSize)
     }
     
     if(backTrace){
-        S[CA[LIST[index]].R][CA[LIST[index]].C] = 0;
+        S[R][C] = 0;
     }
 //        animateSudoku(S);
         

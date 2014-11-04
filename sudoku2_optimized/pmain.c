@@ -41,8 +41,8 @@ int main(int argc, char* argv[])
         r = ROW(i);
         c = COL(i);
         tmp = input[i]-'0';
-        CA[i].R = r; 
-        CA[i].C = c;
+        //CA[i].R = r; 
+        //CA[i].C = c;
         CA[i].N = findPossibleValues(Sudoku, CA[i].A, i);
         CA[i].idx = CA[i].N;
         CA[i].isEmpty = CA[i].N>0?1:0;
