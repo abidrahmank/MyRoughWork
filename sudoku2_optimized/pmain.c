@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
     QuickSort(ListofEmptyCells, CA, 0, nZeroCells-1);
    // printArray(ListofEmptyCells, nZeroCells);
    // printSudoku(Sudoku);
-    int status = DFS(Sudoku, CA, ListofEmptyCells, 0, nZeroCells );
+    int status = DFS(Sudoku, CA, ListofEmptyCells, nZeroCells );
     end = clock();
 
     printSudoku(Sudoku);

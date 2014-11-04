@@ -226,13 +226,13 @@ void QuickSort(int A[], Cell CA[], int l, int r)
     }
 }
 
-int DFS(int S[][9], Cell CA[], int LIST[], int index, int MaxSize)
+int DFS(int S[][9], Cell CA[], int LIST[], int MaxSize)
 {
     
     int backTrace = 1;
     int status = 0;
     
-    int cellUT = LIST[index];                               // Cell Under Test
+    int cellUT = LIST[0];                               // Cell Under Test
     int R = ROW(cellUT);
     int C = COL(cellUT);
     int nPossibleValues = CA[cellUT].N;                     // Its number of possible values
@@ -255,7 +255,7 @@ int DFS(int S[][9], Cell CA[], int LIST[], int index, int MaxSize)
             QuickSort(LIST2, CA2, 0, currSize-1); 
             //printArray(LIST2, currSize);
             if(CA2[LIST2[0]].idx>0){
-                status = DFS(S, CA2, LIST2, index, currSize); // Otherwise, RUN DFS on next empty cell
+                status = DFS(S, CA2, LIST2, currSize); // Otherwise, RUN DFS on next empty cell
                 if(status == 1){
                     backTrace = 0;
                     break;                      // If that is the output, don't inspect other elements
