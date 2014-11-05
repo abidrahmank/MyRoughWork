@@ -256,8 +256,8 @@ uchar DFS(uchar S[][9], Cell CA[], uchar LIST[], uchar MaxSize)
         if(currSize == 0)
             return 1;                                   // if cell processed is last one, success !!!
         else{
-            Cell CA2[81];
-            uchar LIST2[MaxSize]; 
+            Cell CA2[81] __attribute__ ((aligned (16)));
+            uchar LIST2[MaxSize] __attribute__ ((aligned (16))); 
             memcpy(CA2, CA, 81*sizeof(Cell));
             updatePossibleValues(CA2, cellUT, testval);
             memcpy(LIST2, &LIST[1], currSize*sizeof(uchar)); 
