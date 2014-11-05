@@ -1,0 +1,23 @@
+A sudoku solver in C
+========================
+
+Method:
+1.  Find all possible values for every empty cell
+2.  Take an empty cell with minimum number of possibilities. 
+3.  Assign that value and update all its neighbours
+4.  Continue from step 2.
+5.  If it get stuck at some place, backtrack (use DFS)
+
+Different test cases are given as s0.txt, s1.txt ...
+Corresponding solutions are given in sort0.txt sort1.txt ...
+
+
+Number of solutions (based on info from http://www.sudokuwiki.org/sudoku.htm)
+
+1 - s0: unique solution
+2 - s1: >500 solutions
+3 - s2: unique solution
+4 - s3: unique solution
+5 - s4: unique solution
+6 - s6: No enough info
+7 - s9: No enough info
