@@ -1,6 +1,4 @@
-#include "libsudoku.c"
-#include "libmisc.c"
-#include "qsort.h"
+#include "libsudoku.h"
 #include <time.h>
 
 
@@ -62,7 +60,6 @@ int main(int argc, char* argv[])
     
     clock_t start, end;
     start = clock();
-    //QuickSort(ListofEmptyCells, CA, 0, nZeroCells-1);
     int status = DFS(Sudoku, CA, ListofEmptyCells, 0, nZeroCells );
     end = clock();
 

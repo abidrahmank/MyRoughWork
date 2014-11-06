@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifndef H_SUDOKU
-#include "libsudoku.c"
-#endif
+#include "libsudoku.h"
 
 void printArray(int A[], int N)
 {
