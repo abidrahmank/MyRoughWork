@@ -63,6 +63,7 @@ int main(int argc, char* argv[])
     int status = DFS(Sudoku, CA, ListofEmptyCells, 0, nZeroCells );
     end = clock();
 
+    printf("\033c");
     printSudoku(Sudoku);
     printf(" status: %d\n nAssumptions: %lu\n time: %f\n", status, nASSUMPTIONS, (double)(end-start)/CLOCKS_PER_SEC);
     
