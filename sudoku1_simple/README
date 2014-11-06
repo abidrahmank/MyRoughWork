@@ -1,9 +1,17 @@
-A sudoku solver in C
-========================
+A simple Sudoku solver in C
+============================
+
+Method:
+0 - Every cell is numerically labelled (0...80) from left-right, top-bottom
+1 - Find all the possibilities for empty cells
+2 - Assign first value for first empty cell
+3 - Check if it vilolates sudoku properties
+4 - If no, assign for next empty cell
+5 - Continue this process for all cells until a solution is found or all possibilities run out.
 
 Use DFS for searching the solution
 
-Different test cases are given
+Different test cases (files that start with s?.txt) and number of solutions for them are given below (Their solutions are given in files starting with ans?.txt)
 
 Number of solutions (based on info from http://www.sudokuwiki.org/sudoku.htm)
 
