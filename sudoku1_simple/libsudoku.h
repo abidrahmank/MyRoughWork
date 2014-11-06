@@ -13,7 +13,7 @@
 
 #define nROWS 9
 #define nCOLS 9
-#define INTERVAL 5000
+#define INTERVAL 10000
 
 unsigned long nASSUMPTIONS = 0;
 
@@ -51,7 +51,11 @@ void printSudoku(int S[][nCOLS]) // TODO : Pretty print sudoku
 {
     int i,j;
     for(i=0; i<nROWS; ++i){
+        if(i==3 || i==6)
+            printf("- - - + - - - + - - -\n");
         for(j=0; j<nCOLS; ++j){
+            if (j==3 || j==6)
+                printf("| ");
             if(S[i][j] == 0)
                 printf("  ");
             else
@@ -65,7 +69,6 @@ void animateSudoku(int S[][nCOLS])
 {
     printf("\033c");
     printSudoku(S);
-    printf("===========================\n");
     usleep(INTERVAL);
 }
 
