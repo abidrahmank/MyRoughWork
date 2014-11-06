@@ -158,7 +158,7 @@ int DFS(int S[][9], Cell CA[], int LIST[], int index, int MaxSize)
         if(vstatus == 1){                                    // If it is fine
             S[CA[cellUT].R][CA[cellUT].C] = testval;         // Insert the value
             ++nASSUMPTIONS;
-            animateSudoku(S);
+            //animateSudoku(S);
             
             if(index == MaxSize-1)
                 return 1;                                   // if cell processed is last one, success !!!
@@ -173,7 +173,7 @@ int DFS(int S[][9], Cell CA[], int LIST[], int index, int MaxSize)
     }
     
     if(backTrace)
-        S[CA[LIST[index-1]].R][CA[LIST[index-1]].C] = 0;
+        S[CA[LIST[index]].R][CA[LIST[index]].C] = 0;
 //        animateSudoku(S);
         
     return status;
