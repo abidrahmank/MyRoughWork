@@ -13,6 +13,10 @@ Use DFS for searching the solution
 
 Different test cases (files that start with s?.txt) and number of solutions for them are given below (Their solutions are given in files starting with ans?.txt)
 
+To add your own sudoku, enter the sudoku linearly in a text file. Replace all empty cells with 0. Check sample test cases given for example
+
+To animate the result : Uncomment line 180 & 196
+
 Number of solutions (based on info from http://www.sudokuwiki.org/sudoku.htm)
 
 1 - s0: unique solution
