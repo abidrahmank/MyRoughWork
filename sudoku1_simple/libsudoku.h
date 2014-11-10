@@ -3,28 +3,28 @@
 #include <string.h>
 #include <unistd.h>
 
-#define ROW(i) i/9
-#define COL(i) i%9
-#define CELL(i,j) i*9+j
+#define ROW(i) i/9                      // Code to find ROW of a cell i
+#define COL(i) i%9                      // Code to find COL of a cell i
+#define CELL(i,j) i*9+j                 // Code to find CELL number from its (ROW,COL) values
 
-#define B_ROW(i) (ROW(i)/3)*3
-#define B_COL(i) (COL(i)/3)*3
-//#define B_ROWk`
+#define B_ROW(i) (ROW(i)/3)*3           // Fn to find Block row of a cell
+#define B_COL(i) (COL(i)/3)*3           // Fn to find Block col of a cell
 
 #define nROWS 9
 #define nCOLS 9
-#define INTERVAL 10000
+#define INTERVAL 10000                  // Animation interval, Change as you wish 
 
-unsigned long nASSUMPTIONS = 0;
+unsigned long nASSUMPTIONS = 0;         // Keeps track of how many assignments to empty cells are made
 
 typedef struct cell{
     int R, C;
-    int A[9];           // Designed for worst case
+    int A[9];           // Designed for worst case, array to store all possible values
     int N;              // Number of possible values
     int idx;            // Which cell we processed last (TODO : Unnecessary, remove it)
     int isEmpty;        // TODO : Unnecessary, remove it
 }Cell, *CellPtr;
 
+// Function to print an array of size N
 void printArray(int A[], int N)
 {
     int i=0;
@@ -34,6 +34,7 @@ void printArray(int A[], int N)
     printf("\n");
 }
 
+// Function to print the Cell Array, i.e. details of all cells
 void printCA(Cell CA[])
 {
     int i,j;
@@ -47,6 +48,7 @@ void printCA(Cell CA[])
     }
 }
 
+// Function to print the sudoku puzzle
 void printSudoku(int S[][nCOLS]) // TODO : Pretty print sudoku
 {
     int i,j;
@@ -65,6 +67,7 @@ void printSudoku(int S[][nCOLS]) // TODO : Pretty print sudoku
     }
 }
 
+// Function to animate the sudoku (Careful : clears all the windows)
 void animateSudoku(int S[][nCOLS])
 {
     printf("\033c");
@@ -72,6 +75,11 @@ void animateSudoku(int S[][nCOLS])
     usleep(INTERVAL);
 }
 
+// Function to find all possible values that an empty cell can have.
+// S - Input Sudoku
+// A - Output Array
+// cell_val - The cell being investigated (0-80)
+// Returns N - The number of possible values
 int findPossibleValues(int S[][nCOLS], int A[], int cell_val)
 {
     int R = ROW(cell_val);
@@ -94,6 +102,7 @@ int findPossibleValues(int S[][nCOLS], int A[], int cell_val)
         tmp[tmp2] = 0;
     }
 
+    // Now check in a 3x3 block
     int BLK_R = B_ROW(cell_val);
     int BLK_C = B_COL(cell_val);
     for(i=BLK_R; i<BLK_R+3; ++i){
@@ -103,6 +112,7 @@ int findPossibleValues(int S[][nCOLS], int A[], int cell_val)
         }
     }
 
+    // Now copy all the non-zero elements to A and count it
     for(i=1; i<10; i++){
         if(tmp[i] != 0){
             A[count] = tmp[i];
@@ -114,23 +124,24 @@ int findPossibleValues(int S[][nCOLS], int A[], int cell_val)
 }
             
 // This function checks if a value inserted in a cell_val violates the Sudoku properties
-// Returns 1 if it is Fine, Else it returns 0
+// Returns 1 if it is Fine, Returns 0 if it violates
 int checkViolation(int S[][9], Cell CA[], int cell_val, int key)
 {
     int R = CA[cell_val].R; 
     int C = CA[cell_val].C;
-    //int tmp[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
     int i, j, tmp2;
     for(i=0; i<9; ++i){         // First check all values in a ROW    
-        if(S[R][i]==key)         // Take a number in Sudoku
-            return 0;           // Clear it from tmp
+        if(S[R][i]==key)         // if any duplicate number, violated !!!
+            return 0;           
     }
     
-    for(i=0; i<9; ++i){
-        if(S[i][C] == key)         // Now check in a column, ie vertical scanning
+    for(i=0; i<9; ++i){             // Now check in a column, ie vertical Scanning
+        if(S[i][C] == key)         
             return 0;
     }
 
+    // Now check in a 3x3 block
     int BLK_R = B_ROW(cell_val);
     int BLK_C = B_COL(cell_val);
     for(i=BLK_R; i<BLK_R+3; ++i){
@@ -140,16 +151,24 @@ int checkViolation(int S[][9], Cell CA[], int cell_val, int key)
         }
     }
 
+    // if no duplicate found, return 1
     return 1;
 }
 
 
+// The main DFS routine which searches through all possible options
+// S - Input sudoku
+// CA - Input Cell array which contains all informations about the cells
+// LIST - Input, A list of empty cells (we need to insert only at empty cells, right?)
+// index - input, position in LIST array. Needs to add 1 for every recursive call of DFS
+// MaxSize - Size of the LIST, or number of empty cells
+// Returns 1 if solution found, else returns 0
 int DFS(int S[][9], Cell CA[], int LIST[], int index, int MaxSize)
 {
-    int backTrace = 1;
-    int status = 0;
+    int backTrace = 1;                                      // flag to decide if backtrack is needed (1) or not(0)
+    int status = 0;                                         // Status shows if solution found or not
     
-    int cellUT = LIST[index];                               // Cell Under Test
+    int cellUT = LIST[index];                               // Take first empty cell
     int nPossibleValues = CA[cellUT].N;                     // Its number of possible values
     int i, testval, vstatus;
     for(i=0; i<nPossibleValues; ++i){
@@ -160,8 +179,8 @@ int DFS(int S[][9], Cell CA[], int LIST[], int index, int MaxSize)
             ++nASSUMPTIONS;
             //animateSudoku(S);
             
-            if(index == MaxSize-1)
-                return 1;                                   // if cell processed is last one, success !!!
+            if(index == MaxSize-1)                          // Base case, if all cells are filled, return 1
+                return 1;                                   // i.e. if cell processed is last one, success !!!
             else{
                 status = DFS(S, CA, LIST, index+1, MaxSize); // Otherwise, RUN DFS on next empty cell
                 if(status == 1){
@@ -173,7 +192,7 @@ int DFS(int S[][9], Cell CA[], int LIST[], int index, int MaxSize)
     }
     
     if(backTrace)
-        S[CA[LIST[index]].R][CA[LIST[index]].C] = 0;
+        S[CA[LIST[index]].R][CA[LIST[index]].C] = 0;        // If some solution is wrong, backtrack.
 //        animateSudoku(S);
         
     return status;
